@@ -1,12 +1,12 @@
+from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .serializers import CustomTokenSerializer, UserSerializer
-from .permissions import IsAdmin, IsTeacher, IsStudent
-from rest_framework import viewsets
 from .models import User
+from .permissions import IsAdmin
+from .serializers import CustomTokenSerializer, UserSerializer
 
 
 class LoginView(TokenObtainPairView):
@@ -24,27 +24,6 @@ class MeView(APIView):
             'email': user.email,
             'role': user.role,
         })
-
-
-class AdminOnlyView(APIView):
-    permission_classes = [IsAdmin]
-
-    def get(self, request):
-        return Response({'message': 'Hello Admin'})
-
-
-class TeacherOnlyView(APIView):
-    permission_classes = [IsTeacher]
-
-    def get(self, request):
-        return Response({'message': 'Hello Teacher'})
-
-
-class StudentOnlyView(APIView):
-    permission_classes = [IsStudent]
-
-    def get(self, request):
-        return Response({'message': 'Hello Student'})
 
 
 class UserViewSet(viewsets.ModelViewSet):

@@ -1,0 +1,82 @@
+# College Management System
+
+A full-stack college management app with role-based access for **Admin**, **Teacher** and **Student**.
+Built with **Django REST Framework** (backend) and **React + Tailwind CSS** (frontend).
+
+## Features
+
+- **Authentication:** JWT login with automatic token refresh
+- **Role-based access:** each role sees only its own pages, enforced on the server
+- **Admin:** add/delete teachers and students, create courses, assign teachers, enroll students
+- **Teacher:** view assigned courses and students, enter marks, mark daily attendance
+- **Student:** view enrolled courses, marks and attendance percentage
+
+## Tech stack
+
+| Layer | Technology |
+|---|---|
+| Backend | Python, Django, Django REST Framework, SimpleJWT |
+| Frontend | React (Vite), React Router, Axios, Tailwind CSS |
+| Database | SQLite (development) |
+
+## Setup
+
+### Backend
+
+```bash
+cd backend
+python -m venv venv
+venv\Scripts\activate        # Windows
+# source venv/bin/activate   # Mac/Linux
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver
+```
+
+After creating the superuser, make sure its **role** is set to `admin` (Django admin at `http://127.0.0.1:8000/admin`).
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open `http://localhost:5173`.
+
+## API overview
+
+| Method | Endpoint | Access |
+|---|---|---|
+| POST | `/api/auth/login/` | Public |
+| POST | `/api/auth/token/refresh/` | Public |
+| GET | `/api/auth/me/` | Any logged-in user |
+| CRUD | `/api/auth/users/?role=teacher\|student` | Admin |
+| CRUD | `/api/courses/` | Admin |
+| GET | `/api/teacher/courses/` | Teacher (own courses only) |
+| POST | `/api/teacher/marks/` | Teacher |
+| GET/POST | `/api/teacher/attendance/` | Teacher |
+| GET | `/api/student/summary/` | Student (own data only) |
+
+## Security notes
+
+- Every API endpoint enforces its role on the server. Hiding a page in React is only a convenience.
+- Teachers can only access courses assigned to them, and can only grade students enrolled in those courses.
+- Students can only read their own data.
+
+## Project structure
+
+```
+college-management/
+├── backend/
+│   ├── accounts/    # custom User model (with role), JWT login, permissions
+│   ├── college/     # Course, Mark, Attendance models and APIs
+│   └── config/      # Django settings and root URLs
+└── frontend/
+    └── src/
+        ├── api/         # Axios instance with token handling
+        ├── components/  # Navbar, DashboardLayout, ProtectedRoute
+        └── pages/       # Login, admin/, teacher/, student/
+```
