@@ -1,12 +1,8 @@
-import Navbar from '../../components/Navbar'
-
 function AdminDashboard() {
   return (
-    <div>
-      <Navbar title="Admin Dashboard" />
-      <div style={{ padding: 20 }}>
-        <p>Welcome, Admin!</p>
-      </div>
+    <div className="card">
+      <h2 className="text-xl font-semibold text-slate-800">Welcome, Admin</h2>
+      <p className="mt-1 text-slate-500">Use the menu to manage teachers, students and courses.</p>
     </div>
   )
 }

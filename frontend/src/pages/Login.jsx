@@ -22,29 +22,39 @@ function Login() {
     }
   }
 
-  return (
-    <div style={{ maxWidth: 320, margin: '80px auto' }}>
-      <h2>College Login</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <br /><br />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <br /><br />
-        <button type="submit">Login</button>
-      </form>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+    return (
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-600 to-white-700 p-4">
+      <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-xl">
+        <h2 className="text-center text-2xl font-bold text-slate-800">College Login</h2>
+        <p className="mb-6 mt-1 text-center text-sm text-slate-500">
+          Sign in to your account
+        </p>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="text"
+            placeholder="Username"
+            className="input"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            className="input"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button type="submit" className="btn w-full">Login</button>
+        </form>
+
+        {error && (
+          <p className="mt-4 rounded-md bg-red-50 p-3 text-center text-sm text-red-600">
+            {error}
+          </p>
+        )}
+      </div>
     </div>
   )
 }
-
 export default Login

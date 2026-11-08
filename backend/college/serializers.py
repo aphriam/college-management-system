@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from .models import Course
+from .models import Course, Mark, Attendance
+
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -48,3 +50,19 @@ class MarkSerializer(serializers.ModelSerializer):
         if data['score'] > max_score:
             raise serializers.ValidationError('Score cannot be greater than max score.')
         return data
+
+
+
+class AttendanceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Attendance
+        fields = ['id', 'course', 'student', 'date', 'status']
+        validators = []
+
+
+class AttendanceBulkSerializer(serializers.Serializer):
+    course = serializers.PrimaryKeyRelatedField(queryset=Course.objects.all())
+    date = serializers.DateField()
+    records = serializers.ListField(
+        child=serializers.DictField(), allow_empty=False
+    )

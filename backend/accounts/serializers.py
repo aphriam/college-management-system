@@ -1,5 +1,7 @@
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from django.db import IntegrityError
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
 from .models import User
 
 
@@ -17,7 +19,7 @@ class CustomTokenSerializer(TokenObtainPairSerializer):
         data['role'] = self.user.role
         data['username'] = self.user.username
         return data
-    
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -30,11 +32,24 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Cannot create admin users here.')
         return value
 
+    def validate_username(self, value):
+        qs = User.objects.filter(username__iexact=value)
+        if self.instance:
+            qs = qs.exclude(pk=self.instance.pk)
+        if qs.exists():
+            raise serializers.ValidationError('A user with this username already exists.')
+        return value
+
     def create(self, validated_data):
         password = validated_data.pop('password')
         user = User(**validated_data)
         user.set_password(password)
-        user.save()
+        try:
+            user.save()
+        except IntegrityError:
+            raise serializers.ValidationError(
+                {'username': ['A user with this username already exists.']}
+            )
         return user
 
     def update(self, instance, validated_data):
